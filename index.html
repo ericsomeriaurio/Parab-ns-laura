@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Google Play - Subway Surfers</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root { --neon-pink: #ff007f; --neon-blue: #00f3ff; }
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; font-family: 'Poppins', sans-serif; overflow: hidden; color: white; }
+
+        /* --- FASE 1: DISFARCE --- */
+        #site-fake { display: flex; flex-direction: column; height: 100vh; background: #ffffff; color: #5f6368; }
+        .play-header { padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .game-area { padding: 30px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .icon-app { width: 90px; height: 90px; border-radius: 18px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; }
+        .btn-install { background: #01875f; color: white; border: none; padding: 12px 60px; border-radius: 8px; font-weight: 600; font-size: 1rem; margin-top: 25px; width: 100%; max-width: 300px; cursor: pointer; transition: 0.2s; }
+        .btn-install:active { transform: scale(0.98); background: #016e4d; }
+
+        /* --- FASE 2: GLITCH & LOADING --- */
+        #terminal-screen { display: none; position: fixed; inset: 0; background: black; z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
+        .loading-bar-container { width: 80%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; margin-top: 20px; }
+        .loading-bar-fill { width: 0%; height: 100%; background: #01875f; transition: width 0.2s; }
+        
+        .circle-loader { width: 60px; height: 60px; border: 5px solid rgba(0, 243, 255, 0.2); border-top: 5px solid var(--neon-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .term-text { font-family: 'Orbitron'; color: var(--neon-blue); font-size: 0.9rem; text-align: center; margin-top: 15px; min-height: 20px; }
+        .error-text { color: red; font-weight: bold; }
+
+        /* --- FASE 3: A FESTA --- */
+        #party-screen { display: none; position: fixed; inset: 0; z-index: 2000; background: radial-gradient(circle at center, #1a051a 0%, #000 100%); flex-direction: column; align-items: center; justify-content: center; }
+        
+        .neon-msg { font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); text-align: center; position: absolute; width: 100%; padding: 0 20px; }
+
+        /* BOLO E PRESENTE */
+        #cake-section, #gift-section { display: none; flex-direction: column; align-items: center; z-index: 2500; }
+        .real-img { width: 220px; height: auto; filter: drop-shadow(0 0 30px rgba(255,255,255,0.15)); }
+        
+        .counter-big { font-size: 4.5rem; font-family: 'Orbitron'; color: #ffd700; margin: 10px 0; text-shadow: 0 0 20px orange; }
+        .instruction-text { color: var(--neon-blue); margin-top: 15px; font-size: 1rem; text-align: center; font-weight: bold; }
+
+        /* --- FASE 4: A CARTA --- */
+        #letter-screen { 
+            display: none; position: fixed; bottom: -100%; left: 0; width: 100%; height: 85vh; 
+            background: #fff; border-radius: 25px 25px 0 0; color: #333; z-index: 5000; 
+            padding: 30px 25px; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+        }
+        .letter-content { line-height: 1.7; font-size: 1.05rem; padding-bottom: 50px; }
+        .close-btn { background: #333; color: white; width: 100%; padding: 15px; border: none; border-radius: 10px; margin-top: 30px; font-weight: bold; font-size: 1rem; }
+    </style>
+</head>
+<body>
+
+    <div id="site-fake">
+        <div class="play-header">
+            <span style="font-size:24px; margin-right:20px">←</span>
+            <span style="font-weight:600; font-size:18px">Google Play</span>
+        </div>
+        <div class="game-area">
+            <img src="https://play-lh.googleusercontent.com/CiS_t7yE_Y6Bf-q_0Yx_U8U7qY0_D0_8992_992_992_992" class="icon-app">
+            <h1 style="font-size:24px; color:#202124; margin:5px 0">Subway Surfers</h1>
+            <p style="color:#01875f; font-weight:600; margin-bottom:5px">SYBO Games</p>
+            <p style="font-size:12px; color:#5f6368">Contém anúncios • Compras no app</p>
+            <div style="display:flex; gap:10px; margin-top:15px; font-size:12px; color:#5f6368">
+                <span>⭐ 4.6</span> <span>|</span> <span>12 MB</span> <span>|</span> <span>Livre</span>
+            </div>
+            <button class="btn-install" onclick="startGlitch()">Instalar</button>
+        </div>
+    </div>
+
+    <div id="terminal-screen">
+        <div id="circle-spinner" class="circle-loader"></div>
+        <div id="status-text" class="term-text">Conectando ao servidor...</div>
+        <div id="bar-container" class="loading-bar-container">
+            <div id="bar-fill" class="loading-bar-fill"></div>
+        </div>
+    </div>
+
+    <div id="party-screen">
+        <div id="text-container" style="position:relative; width:100%; height:200px; display:flex; align-items:center; justify-content:center;"></div>
+
+        <div id="cake-section">
+            <img src="https://cdn-icons-png.flaticon.com/512/4562/4562486.png" class="real-img" alt="Bolo">
+            <div id="age-counter" class="counter-big">0</div>
+            <p id="candle-msg" class="instruction-text">Aguarde as velas...</p>
+        </div>
+
+        <div id="gift-section">
+            <img src="https://cdn-icons-png.flaticon.com/512/4213/4213958.png" class="real-img animate__animated animate__pulse animate__infinite" onclick="openLetter()">
+            <p class="instruction-text" style="cursor:pointer" onclick="openLetter()">clica para abrir o teu presente zin☺️</p>
+        </div>
+    </div>
+
+    <div id="letter-screen">
+        <div style="width:50px; height:5px; background:#ddd; border-radius:10px; margin:0 auto 20px;"></div>
+        <div class="letter-content">
+            <h2 style="color:var(--neon-pink); text-align:center;">Zin amor Lara 💖</h2>
+            <br>
+            <p>Feliz aniversário 🎂.</p>
+            <p>26 de dezembro de 2025 é a data de hoje e você sabe exatamente o quão importante está data é para nós os dois.</p>
+            <p>Que Deus abençoe este dia, que olhe sempre por ti, que te ajude a chegar nos teus objetivos wy.</p>
+            <p>Desejo tudo de bom para você.</p>
+            <p>Desculpa pelos meus comportamentos mostrados nestes dias, espero que você me perdoe.</p>
+            <p>São mil e umas palavras para você e você sabe bem disso.</p>
+            <p>Eu não sei como é que você faz para que as pessoas gostem tanto assim de ti.</p>
+            <p>Você este lá pra mim, você foi uma amiga irmã, você sempre foi demais pra mim.</p>
+            <p>Eu Amo muito você, tipo umas 1000x kkkk.</p>
+            <p>Bem, esse foi o melhor que consegui fazer para você.</p>
+            <p>Espero que gostes, e aproveito já para agradecer você por tudo e para desejar um feliz natal e um próspero ano novo.</p>
+            <p>Só espero que nunca te esqueças de mim, mesmo que eu não esteja falando com vc😩.</p>
+            <p>Enfim, obrigado por tudo wy, vc é simplesmente maravilhosa e espetacular.</p>
+            <p>Tenha uma boa comemoração de aniversário pois este dia é teu, por isso te peço que não mudes e que brilhes mais.</p>
+            <p>Feliz aniversário amor, de mim para ti.</p>
+            <p>Te amo ☺️💖......</p>
+            <p style="font-size:0.9rem; color:#666; margin-top:20px;">Ass: Tobi</p>
+
+            <button class="close-btn" onclick="finishSequence()">Sair da Carta</button>
+        </div>
+    </div>
+
+    <script>
+        const statusTxt = document.getElementById('status-text');
+        const barFill = document.getElementById('bar-fill');
+        const barContainer = document.getElementById('bar-container');
+        const spinner = document.getElementById('circle-spinner');
+
+        // --- SISTEMA DE NOTIFICAÇÃO DO TOBI ---
+        function notificarTobi(acao) {
+            console.log("ALERTA: Larazin " + acao);
+            // Isso cria um registro no seu terminal Python
+            fetch('/ALERTA_LARAZIN_' + acao.replace(/ /g, '_'));
+        }
+
+        function startGlitch() {
+            notificarTobi("CLICOU EM INSTALAR"); // NOTIFICAÇÃO 1
+            
+            document.getElementById('site-fake').style.display = 'none';
+            document.getElementById('terminal-screen').style.display = 'flex';
+
+            anime({ targets: '#bar-fill', width: '70%', duration: 2000, easing: 'linear' });
+
+            setTimeout(() => {
+                statusTxt.innerText = "ERRO: Falha no download.";
+                statusTxt.classList.add('error-text');
+                barFill.style.background = 'red';
+            }, 2200);
+
+            setTimeout(() => {
+                statusTxt.classList.remove('error-text');
+                statusTxt.innerText = "Processando significado da data...";
+                barContainer.style.display = 'none';
+                spinner.style.display = 'block';
+            }, 3500);
+
+            setTimeout(() => {
+                statusTxt.innerText = "Analisando: 26 de Dezembro de 2025...";
+            }, 7000);
+
+            setTimeout(() => {
+                statusTxt.style.color = "#0f0";
+                statusTxt.innerText = "SIGNIFICADO ENCONTRADO!";
+            }, 10000);
+
+            setTimeout(startParty, 11500);
+        }
+
+        function startBackgroundEffects() {
+            setInterval(() => {
+                confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 }, colors: ['#ff007f', '#ffffff', '#00f3ff'] });
+                confetti({ particleCount: 20, spread: 100, origin: { y: 0.4 }, shapes: ['heart'], colors: ['#ff0000'], scalar: 1.5 });
+            }, 1500);
+        }
+
+        function startParty() {
+            document.getElementById('terminal-screen').style.display = 'none';
+            document.getElementById('party-screen').style.display = 'flex';
+            startBackgroundEffects();
+
+            const container = document.getElementById('text-container');
+            
+            function showText(html, duration) {
+                return new Promise(resolve => {
+                    container.innerHTML = `<div class="neon-msg animate__animated animate__fadeInUp">${html}</div>`;
+                    setTimeout(() => {
+                        const el = container.querySelector('.neon-msg');
+                        if(el) el.classList.replace('animate__fadeInUp', 'animate__fadeOutDown');
+                        setTimeout(resolve, 800);
+                    }, duration);
+                });
+            }
+
+            async function runTexts() {
+                await showText("<h1 style='font-size:2.5rem'>Feliz aniversário</h1>", 2000);
+                await showText("<h1 style='font-size:3rem; color:#ff007f'>Larazin💖</h1>", 2500);
+                await showText("<p style='font-size:1.2rem'>Você acaba de completar hoje<br>os teus 16 aninhos</p>", 3000);
+                await showText("<p style='font-size:1.1rem'>Eu simplesmente não poderia passar em branco<br>esta data tão importante assim</p>", 3500);
+                startCake();
+            }
+            runTexts();
+        }
+
+        function startCake() {
+            document.getElementById('text-container').innerHTML = ""; 
+            document.getElementById('cake-section').style.display = 'flex';
+            notificarTobi("ESTA VENDO O BOLO"); // NOTIFICAÇÃO 2
+
+            let age = 0;
+            const timer = setInterval(() => {
+                document.getElementById('age-counter').innerText = age;
+                if(age >= 16) {
+                    clearInterval(timer);
+                    document.getElementById('candle-msg').innerText = "🔥 Velas acesas! Sopre agora...";
+                    setTimeout(() => {
+                        document.getElementById('candle-msg').innerText = "💨 Você apagou!";
+                        confetti({ particleCount: 200, spread: 150 });
+                        setTimeout(() => {
+                            document.getElementById('cake-section').style.display = 'none';
+                            document.getElementById('gift-section').style.display = 'flex';
+                            notificarTobi("RECEBEU O PRESENTE"); // NOTIFICAÇÃO 3
+                        }, 2000);
+                    }, 3000);
+                }
+                age++;
+            }, 200);
+        }
+
+        function openLetter() {
+            notificarTobi("ABRIU A CARTA"); // NOTIFICAÇÃO 4
+            confetti({ particleCount: 300, spread: 100, origin: { y: 0.8 } });
+            document.getElementById('letter-screen').style.display = 'block';
+            anime({ targets: '#letter-screen', bottom: 0, duration: 1500, easing: 'easeOutExpo' });
+        }
+
+        // --- FINAL DO GENJUTSU ---
+        function finishSequence() {
+            notificarTobi("LEU A CARTA E FECHOU"); // NOTIFICAÇÃO 5
+            anime({ targets: '#letter-screen', bottom: '-100%', duration: 1000, easing: 'easeInExpo' });
+
+            setTimeout(() => {
+                document.getElementById('gift-section').style.display = 'none'; 
+                const container = document.getElementById('text-container');
+                container.innerHTML = `<div class="neon-msg animate__animated animate__fadeInUp"><h1 style='font-size:2rem; color:#fff'>Feliz aniversário<br>meu amorzão</h1></div>`;
+                
+                setTimeout(() => {
+                    // MENSAGEM: EU AMO MUITO VOCÊ
+                    container.innerHTML = `<div class="neon-msg animate__animated animate__fadeInUp"><h1 style='font-size:2.5rem; color:#ff007f'>Eu amo muito você ❤️</h1></div>`;
+                    
+                    setTimeout(() => {
+                        // MENSAGEM FINAL (GENJUTSU)
+                        notificarTobi("CAIU NO GENJUTSU FINAL"); // NOTIFICAÇÃO FINAL
+                        container.innerHTML = ""; 
+                        document.body.style.background = "black";
+                        
+                        // O Texto do Genjutsu
+                        document.getElementById('party-screen').innerHTML = `
+                            <div style="padding:20px; font-family:'Poppins'; animation: fadeIn 2s;">
+                                <h2 style="color:var(--neon-pink); margin-bottom:20px">Se você chegou até aqui é porque caiu no meu genju perfeito.</h2>
+                                <p style="font-size:1.2rem; color:#ddd; margin-bottom:20px">Enganei vc a tentar baixar um jogo só para que você visse está surpresa kkkkk.</p>
+                                <h1 style="color:var(--neon-blue)">Tchau☺️</h1>
+                            </div>
+                        `;
+                    }, 4000);
+                }, 3000);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
